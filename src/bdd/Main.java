@@ -1,6 +1,8 @@
 package bdd;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends FonctionMatrice {
 
@@ -18,42 +20,63 @@ public class Main extends FonctionMatrice {
 		int shuffleTable[]=new int[150];
 		double valeurMatriceAleatoire[]=new double[4];
 		double meilleurVecteur[]=new double[4];
+		String EtiquetteFleur="";
 		
-		int valeurAlindiceUnDuTableau_de_shuffle=0;
+		//une collection de Nodes 
+		 List<Node> listDesNodes = new ArrayList<Node>();
 		
+		
+		/**
+		 * les instances des classes 
+		 * **/
 		Initialisation init=new Initialisation();
 		matrice=init.matrice;
-		
 		NormalisationLongeur normal=new NormalisationLongeur(matrice);
+		FonctionVecteur traitementVecteur =new FonctionVecteur();
+		FonctionMatrice traitementMatrice=new FonctionMatrice();
+		
+		
 		matriceNormalise=normal.matriceNormalise;
-		vecteurMoyen=NormalisationLongeur.vecteurMoyen(matriceNormalise);
-		NormalisationLongeur.vminVmax(vecteurMoyen, vecteurMin, vecteurMax);
 		
-		NormalisationLongeur.tableAleatoireAutourDeLaMoyenne(vecteurAleatoire, vecteurMin, vecteurMax);
-		shuffleTable=NormalisationLongeur.shuffle_table();
+		vecteurMoyen=traitementVecteur.vecteurMoyen(matriceNormalise);
+		traitementVecteur.vminVmax(vecteurMoyen, vecteurMin, vecteurMax);
 		
-		matriceAléatoire=NormalisationLongeur.Bdd_aléatoire(shuffleTable, matrice);
-		
-		valeurAlindiceUnDuTableau_de_shuffle=shuffleTable[0];
-		
-		valeurMatriceAleatoire=NormalisationLongeur.Vecteur_aleatoire_deLaBdd(shuffleTable, matrice);
-		
-		meilleurVecteur=NormalisationLongeur.plus_petite_distance_euclidienne(valeurMatriceAleatoire,matrice,shuffleTable[0]);
+		traitementVecteur.tableAleatoireAutourDeLaMoyenne(vecteurAleatoire, vecteurMin, vecteurMax);
 		
 		
-		System.out.println("---------------Donnée Brute--------------------------");
+		//un tableau de shuffle 
+		shuffleTable=traitementVecteur.shuffle_table();
+		
+		/***
+		 * on créer les Nodes avec 60 vecteurs
+		 * 
+		 * 
+		 * ***/
+ 
+		
+  /**
+   * affichage sur la console
+   * 
+   * **/
+		
+		matriceAléatoire=FonctionMatrice.Bdd_aléatoire(shuffleTable, matrice);
+		System.out.println("---------------Données Brute--------------------------");
         afficherMatrice(matrice);
 		
 		System.out.println("---------------Matrice Normalisé--------------------------");
 		afficherMatrice(matriceNormalise);
 		System.out.println("---------------Vecteur Max= Vecteur Moyen+0.005--------------------------");
 		afficherTableau(vecteurMax);
+		System.out.println();
 		System.out.println("---------------Vecteur Moyen----------------------------------------------");
 		afficherTableau(vecteurMoyen);
+		System.out.println();
 		System.out.println("---------------Vecteur Min= Vecteur Moyen-0.005--------------------------");
 		afficherTableau(vecteurMin);
+		System.out.println();
 		System.out.println("---------------Vecteur Aléatoire autours de la moyenne--------------------------");
 		afficherTableau(vecteurAleatoire);
+		System.out.println();
 		
 		System.out.println("---------------Un Shuffle Table--------------------------");
 		afficherTableauInt(shuffleTable);
@@ -62,13 +85,34 @@ public class Main extends FonctionMatrice {
 		System.out.println("---------------matrice Aléatoire--------------------------");
         afficherMatrice(matriceAléatoire);
         
-        System.out.println("---------------Un vecteur aléatoire de la matrice--------------------------");
-        afficherTableau(valeurMatriceAleatoire);
-		System.out.println();
+        
 		
-		 System.out.println("---------------le vecteur avec la plus petite distance E du vecteur précedant est----------");
-	        afficherTableau(meilleurVecteur);
-			System.out.println();
+		
+		 for (int i = 0; i < 61; i++) {
+				
+				//on colle une etiquette selon l'appartenance de la fleur
+				if (shuffleTable[i]<=50) {
+					EtiquetteFleur="Iris-setosa";
+				} else {
+					if (shuffleTable[i]<=100) {
+						EtiquetteFleur="Iris-versicolor";
+					} else {
+
+						EtiquetteFleur="Iris-virginica";
+					}
+
+				}
+				//on instancie un nouveau node avec les valeurs récupérées
+				Node n=new Node(traitementMatrice.Vecteur_aleatoire_deLaBdd(shuffleTable[i], matrice)
+						, EtiquetteFleur,
+						traitementMatrice.distance_euclidienne(valeurMatriceAleatoire,meilleurVecteur),
+						traitementMatrice.plus_petite_distance_euclidienne(valeurMatriceAleatoire,matrice,shuffleTable[i]));
+				//on ajoute le node a la liste des nodes
+				listDesNodes.add(n);
+				}	
+			  
+			  Node affiche=new Node();
+			  affiche.afficheNode(listDesNodes);
 	       
 	      }  
 	    

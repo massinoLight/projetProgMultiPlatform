@@ -1,5 +1,13 @@
 package bdd;
 
+/***
+ * la classe qui est chargé 
+ * de recupérer les données de la base de données (en utilisant es tokenizer) 
+ * et de retourner les valeurs de cette derniére 
+ * dans une matrice de double 
+ * 
+ * ***/
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +24,9 @@ public class Initialisation {
 		File file;
 		BufferedReader br=null;
 		String token="";
-		//le  chemin ou se trouve  la base de données iris
-		file = new File("/home/massino/Bureau/iris.data");
+		//si la base de onnée n'est pas  dans le méme projet préciser son chemin
+		//file = new File("/home/massino/Bureau/iris.data");
+		file = new File("iris.data");
 		//String str;
 		
 		int nLingne=0,nColonne=0;
